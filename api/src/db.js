@@ -1,15 +1,23 @@
-require('dotenv').config();
+//aca hago las conexiones de los modelos
+
+require('dotenv').config(); //me permite usar las variables de entorno
 const { Sequelize } = require('sequelize');
+const modelCountry = require('./models/Country');
+const modelActivity = require('./models/Activity')
 const fs = require('fs');
 const path = require('path');
 const {
   DB_USER, DB_PASSWORD, DB_HOST,
-} = process.env;
+} = process.env; //traigo las var de entorno
 
 const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/countries`, {
-  logging: false, // set to console.log to see the raw SQL queries
+  logging: false, // set to console.log to see the raw SQL queries //deshabilita el loggin 
   native: false, // lets Sequelize know we can use pg-native for ~30% more speed
 });
+
+// validacion propia
+sequelize.authenticate().then(()=>console.log('success')).catch(e => console.log(e));
+
 const basename = path.basename(__filename);
 
 const modelDefiners = [];
@@ -24,16 +32,21 @@ fs.readdirSync(path.join(__dirname, '/models'))
 // Injectamos la conexion (sequelize) a todos los modelos
 modelDefiners.forEach(model => model(sequelize));
 // Capitalizamos los nombres de los modelos ie: product => Product
+//Object.entries() >> devuelve una matriz de pares ['key','value']
 let entries = Object.entries(sequelize.models);
 let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
-sequelize.models = Object.fromEntries(capsEntries);
+sequelize.models = Object.fromEntries(capsEntries); //transforma la lista de pares ['key','value'] en objetos
+
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
-const { Pokemon } = sequelize.models;
+//console.log(sequelize.models);
+const {Country, Activity} = sequelize.models;
 
 // Aca vendrian las relaciones
 // Product.hasMany(Reviews);
+Country.belongsToMany(Activity, {through: 'Activity_Country'});
+Activity.belongsToMany(Country, {through: 'Activity_Country'});
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
