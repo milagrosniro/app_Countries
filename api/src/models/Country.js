@@ -7,7 +7,7 @@ const { DataTypes } = require('sequelize');
 // Imagen de la bandera *
 // Continente *
 // Capital *
-// Subregión
+// Subregión 
 // Área
 // Población
 
@@ -16,11 +16,11 @@ module.exports = (sequelize) => {
   sequelize.define('country', {
     id:{
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false, //no permite que este vacio
       primaryKey: true,
-      validate: { //validar la longitud del id
-        len: [3]
-      }
+      // validate: { //validar la longitud del id
+      //   len: [3]
+      // }
     },
     name: {
       type: DataTypes.STRING,
@@ -43,11 +43,11 @@ module.exports = (sequelize) => {
       
     },
     area:{
-      type: DataTypes.STRING,
+      type: DataTypes.FLOAT,
       
     }, 
     population: {
-      type: DataTypes.STRING,
+      type: DataTypes.FLOAT
      
     }
   });

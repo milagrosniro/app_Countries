@@ -1,32 +1,69 @@
-const express = require('express')
-const {Country} = require('../models/Country')
+
+const { Country, Activity } = require('../db.js');
 const { Router } = require('express');
-const {Activity} = require('../models/Activity');
+
 
 const router = Router()
 // [ ] POST /activity:
 // Recibe los datos recolectados desde el formulario controlado de la ruta de creación de actividad turística por body
 // Crea una actividad turística en la base de datos
 
-router.post('/activity', async (req,res)=>{
-    // ID
-// Nombre
-// Dificultad (Entre 1 y 5)
-// Duración
-// Temporada (Verano, Otoño, Invierno o Primavera)
-const {id, name, dificulty, duration, season} = req.body
 
-//const users = await store.users.findOrCreate({ where: { email } });
-const activity = await Activity.findOrCreate({
-    where: {
-        name: name,
-        dificulty: dificulty,
-        duration: duration,
-        season: season
+router.get("/", async (req, res, next) => {
+    try {
+        const activities = await Activity.findAll({
+            include: Country
+        });
+        return res.json(activities)
+    } catch (err) {
+        return next(err);
     }
 })
-return res.json(activity)
 
+
+router.post('/',async(req,res,next)=>{
+
+    const{name,dificulty,duration,season,idCountry}=req.body;
+
+    try{
+        const postActivity = await Activity.create({
+            name: name,
+            dificulty: dificulty,
+            duration: duration,
+            season: season
+        })
+
+        if(!Array.isArray(idCountry)){
+            const country = await Country.findByPk(idCountry);
+            await postActivity.addCountry(country)
+           // return res.send (`${postActivity.name} fue posteada y relacionada con ${idCountry}`)
+            return res.send(postActivity)
+        }else{
+
+            idCountry.forEach(async(cId)=>{
+                const country = await Country.findByPk(cId);
+                await postActivity.addCountry(country)
+                
+            })
+           // return res.send (`${postActivity.name} fue posteada y relacionada con ${idCountry}`)
+           return res.send(postActivity)
+        }
+    }catch(error){
+        next(error)
+    }
+})
+
+
+//OBTENER TODAS LAS ACTIVIDADES
+router.get('/', async(req,res,next)=>{
+    try{
+        const activities = await Activity.findAll({
+            include: {model: Country}
+        });
+        return res.json(activities)
+    }catch(error){
+        return next(error)
+    }
 })
 
 module.exports = router;

@@ -1,0 +1,6 @@
+.landingPageContainer {
+    background-image: url("/home/cristian/Henry/APP-Countries/client/src/images/app-countries.jpeg");
+    background-size: cover;
+    height: 100vh;
+    overflow: hidden; /*Le agregué esto para que no me salga la barra de scroll*/
+  }

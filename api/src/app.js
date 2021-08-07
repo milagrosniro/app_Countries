@@ -4,9 +4,10 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 //const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const cors = require('cors');
 const routes = require('./routes/index.js');
-const countriesRoutes = require('./routes/countries.js');
-const activityRoutes = require('./routes/activity.js')
+// const countriesRoutes = require('./routes/countries.js');
+// const activityRoutes = require('./routes/activity.js')
 
 require('./db.js');
 
@@ -17,6 +18,7 @@ server.name = 'API';
 
 //cambie el bodyParser por express
 server.use(express.urlencoded({ extended: true, limit: '50mb' }));
+server.use(cors()); //traigo el middleware cors
 server.use(express.json({ limit: '50mb' }));
 server.use(cookieParser());
 server.use(morgan('dev'));
@@ -31,11 +33,9 @@ server.use((req, res, next) => {
   next();
 });
 
-// server.use(server.router);
-// routes.initialize(server);
-server.use('/', routes);
-server.use('/countries', countriesRoutes );
-server.use('/activity', activityRoutes);
+
+server.use('/', routes); //cualquier ruta q use va a ir a routes
+
 
 // Error catching endware.
 server.use((err, req, res, next) => { // eslint-disable-line no-unused-vars

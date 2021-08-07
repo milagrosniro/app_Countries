@@ -2,8 +2,8 @@
 
 require('dotenv').config(); //me permite usar las variables de entorno
 const { Sequelize } = require('sequelize');
-const modelCountry = require('./models/Country');
-const modelActivity = require('./models/Activity')
+//const modelCountry = require('./models/Country');
+//const modelActivity = require('./models/Activity')
 const fs = require('fs');
 const path = require('path');
 const {
