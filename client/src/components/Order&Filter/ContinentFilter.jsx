@@ -1,24 +1,33 @@
 import React from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import { continentFilter } from '../../actions/actions';
+import CountryCard from '../Country/CountryCard';
 
-export default function ContinentFilter({continent, setContinent}){
+export default function ContinentFilter({continent, setContinent, countries}){
     const dispatch = useDispatch();
-    // const [continent, setContinent] = useState("all");
+    
+    const countriesFiltered = useSelector(e => e.countriesFiltered)
+    console.log(continent)
 
     function handleSelectChange(e){
-       setContinent(e.target.value)
+        dispatch(continentFilter(e.target.value))
+        setContinent(e.target.value) 
     }
 
-    function handleOnSubmit(e){
-        e.preventDefault();
-        dispatch(continentFilter(e.target.value))
-    }
+    // function handleOnSubmit(e){
+    //     e.preventDefault();
+    //     // dispatch(continentFilter(continent))
+        
+    // }
 
     return(
-       <section onSubmit={(e)=>{handleOnSubmit(e)}}>
-           <label> FILTRAR POR CONTINENTE:
-               <select value={continent} onChange={(e)=>{handleSelectChange(e)}}>
+       <section 
+       style={{padding:"2%", textAlign:"center", width:"80%"}}
+      >
+           <label style={{margin:"1%"}}> FILTRAR POR CONTINENTE:
+               <select value={continent} onChange={(e)=>{handleSelectChange(e)}}
+               style={{marginLeft:"2%"}}
+               >
                <option value="all">None</option>
                 <option value="Africa">Africa</option>
                 <option value="Americas">Americas</option>
@@ -31,7 +40,10 @@ export default function ContinentFilter({continent, setContinent}){
 
            </label>
 
-           <button type="submit" value="Submit">FILTRAR</button>
+           <button type="submit" value="Submit" style={{marginLeft: "1%",
+    borderRadius: "28px"}} >FILTRAR</button>
+    
        </section>
+       
     )
 }

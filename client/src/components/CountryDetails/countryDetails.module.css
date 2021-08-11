@@ -1,0 +1,91 @@
+.countryDetails{
+    background-color: #E4DFDA;
+    height: 100vh;
+}
+
+.nameSection{
+    align-items: center;
+    background-color: white;
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.middle{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 1%;
+}
+
+.activities{
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.flag{
+    align-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.info{
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    padding: 2%;
+    text-align: center;
+}
+
+.infoLeftRight{
+    width: 40vh;
+}
+
+.countryName{
+    color: black;
+    font-size: 4rem;
+    margin: 15px;
+}
+
+.flag{
+    height: 450px;
+}
+
+.li{
+    font-size: 1.5rem;
+    font-style: italic;
+    margin: 70px 0;
+}
+
+.data{
+    font-size: 2rem;
+    font-style: normal;
+}
+
+.btn{
+
+    font-size: 2rem;
+}
+
+.titleActivities{
+
+    font-size: 1.5rem;
+}
+
+.activityCard{
+    background-color: white;
+    border-radius: 20px;
+    margin: 2%;
+    padding: 2%;
+    text-align: center;
+    width: 150px;
+}
+
+.activities2{
+    display: flex;
+}

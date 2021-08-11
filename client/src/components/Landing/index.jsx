@@ -1,21 +1,22 @@
 
 import React from "react";
 import { Link } from 'react-router-dom';
-// import style from "./landingPage.module.css"
+import classes from './landing.module.css'
 
 //importar estilos, agregar imagen en los estilos
 
 
 export default function Landing(){
     return (
-        <div >
-
-            <h1>WELCOME</h1>
-            <img src={Image} alt="Image Countries"/>
-            
+        <section className={classes.landing}>
+            <div className={classes.left}>
+                <div className={classes.leftData}>
+                   <h1 className={classes.title}>BIENVENIDOS A LA AVENTURA</h1> 
             <Link to="/countries">
-            <button>START</button>
+            <button className={classes.btn}>START</button>
             </Link>
-        </div>
+                </div>
+            </div>            
+        </section>
     )
 }

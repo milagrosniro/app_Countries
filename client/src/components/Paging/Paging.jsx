@@ -4,23 +4,27 @@ import {React} from 'react';
 
 //ESTE COMPONENTE RENDERIZA LOS NUMEROS DE PAGINA
 
-//traigo por parametro los paises q deben ir por pagina, el length de todos los paises y el paged que setea el estado de paginado
-export default function Paged({countriesPage, allCountriesLength, paged}){
-    const pageNumbers = [];
-    const totalPages = Math.floor(allCountriesLength/countriesPage)
-    for(let i=0; i<totalPages; i++){
-        pageNumbers.push(i+1); //se pusehan los numeros de paginas. hago i+1 para q empice desde el num 1
-    } 
+//traigo por parametro los paises q deben ir por pagina, el length de todos los paises filtados y el paged que setea el estado de paginado
+
+export default function Paged({countriesPerPage, totalCountries, paginado}){
+    const pageNumbers=[]
+
+    for(let i=1; i<=Math.floor(totalCountries/countriesPerPage); i++){ //divido el total de paises filtrados por la cant de paises que debo mostrar por pagina, hago un for con el resultado y voy mostrando el numero de pagina
+        pageNumbers.push(i)
+    }
+
     return(
         <nav>
             <ul>
-                {pageNumbers && pageNumbers.map(num=>(
-                    <li key={num}>
-                        {/* //recorro el arreglo con el numero de paginas, cada vez q se haga un click en el link llamo a la funcion paged, para actualizar ese estado y renderizo el numero q me devuelve */}
-                            <a onClick={()=>paged(num)}>{num}</a>
-                    </li>
-                ) 
-                )}
+                { pageNumbers &&
+                  pageNumbers.map(number=>(
+                      <li>
+                          {/* renderizo cada numero que sera un link q me lleva a esa pagina */}
+                          <a onClick={()=>paginado(number)}> 
+                         {number} 
+                      </a>
+                      </li>
+                  ) )}
             </ul>
         </nav>
     )

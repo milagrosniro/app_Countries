@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { sortAlf } from '../../actions/actions';
-//React Hook "useState" is called in function "orderAlf" that is neither a React function component nor a custom React Hook function. React component names must start with an uppercase letter     react-hooks/rules-of-hooks
+//import classes from './order&filter.module.css'
+
 export default function OrderAlf({order, setOrder}){
 
     
@@ -18,6 +19,9 @@ export default function OrderAlf({order, setOrder}){
     }
 
     return(
-        <button onClick={(e)=>{handleOnClick(e)}}>ORDENAR ALFABETICAMENTE</button>
+        <button onClick={(e)=>{handleOnClick(e)}} style={{marginLeft: "1%",
+        borderRadius: "28px"}}>ORDENAR ALFABETICAMENTE
+        
+        </button>
     )
 }

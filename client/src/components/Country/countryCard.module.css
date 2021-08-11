@@ -1,0 +1,30 @@
+.card{
+    align-items: center;
+    background-color: whitesmoke;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    height: 400px;
+    justify-content: space-around;
+    text-align: center;
+    width: 300px;
+}
+
+.flag{
+    height: 160px;
+    width: 240px;
+}
+
+.name{
+    font-size: 30px;
+}
+.continent{
+    font-size: 20px;
+    font-style: inherit;
+}
+.link{
+    color: black;
+    text-decoration: none;
+    margin: 1%;
+}

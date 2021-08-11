@@ -12,7 +12,7 @@ import ActivityForm from './components/ActivityForm/ActivityForm';
 import {getAllCountries} from '../src/actions/actions';
 import {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
-import Activity from './components/Activity/Activity'
+//import Activity from './components/Activity/Activity'
 
 function App() {
  const dispatch = useDispatch();
@@ -28,8 +28,8 @@ function App() {
       <Switch>
         <Route exact path='/' component={Landing}/>
         <Route exact path='/countries' component={Home}/>
-        <Route  path='/postActivity' component={Activity}/>
-        <Route  path='/countries/:id' component={CountryDetails}/>
+        <Route path='/postActivity' component={ActivityForm}/>
+        <Route path='/countries/:id' component={CountryDetails}/>
 
       </Switch>
       

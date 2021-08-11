@@ -4,70 +4,146 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import ActivityFilter from "../Order&Filter/ActivityFilter";
-import ContinentFilter from "../Order&Filter/ContinentFilter";
+ //import ContinentFilter from "../Order&Filter/ContinentFilter";
 import OrderAlf from "../Order&Filter/OrderAlf";
-import SearchName from "../Order&Filter/SearchName";
+// import SearchName from "../Order&Filter/SearchName";
 import SortPopulation from "../Order&Filter/SortPopulation";
-import Prev from "../Paging/Prev";
-import Next from "../Paging/Next";
+// import Prev from "../Paging/Prev";
+// import Next from "../Paging/Next";
 import CountryCard from "../Country/CountryCard";
-import { getAllCountries } from "../../actions/actions";
+import { getAllCountries, continentFilter, getCountryByName } from "../../actions/actions";
+import classes from "./home.module.css";
+import Paged from "../Paging/Paging";
+
+
 
 export default function Home(){
-    const countries = useSelector(e=> e.countriesLoaded);
+    const dispatch = useDispatch()
+    const countries = useSelector(e=> e.countriesLoaded); //traigo TODOS los paises
+    const countriesFiltered = useSelector(e => e.countriesFiltered)
     console.log(countries)
     const [search, setSearch] = useState();
     const [order, setOrder] = useState("ASC");
     const [sortByPopulation, setSortByPopulation] = useState("ASC");
-    const [continent, setContinent] = useState("all");
     const [activity, setActivity] = useState("all");
-    const [indexStart, setIndexStart] = useState(0);
-    const [indexEnd, setIndexEnd] = useState(9);
-    const dispatch = useDispatch()
-     
-    //traigo todos los paises
+    const [currentPage, setCurrentPage]=useState(1) //nro de pagina
+    const [countriesPerPage, setCountriesPerPage]= useState(9) //paises por pagina
+    const indexOfLastCountries= currentPage * countriesPerPage //const para indicar hasta que pais mostrar en cada pag
+    const indexOfFisrtCountries= indexOfLastCountries - countriesPerPage //const para indicar desd que pais mostrar en cada pag
+    const currentCountries = countriesFiltered.slice(indexOfFisrtCountries, indexOfLastCountries) //paises que se muestran en la pagina. 
+    
+    const paginado= (pageNumber)=>{
+        setCurrentPage(pageNumber)
+    }
+
+    //traigo todos los paises cuando se renderiza el componente
     useEffect(()=>{
                 dispatch(getAllCountries()) //reemplaza el mapDispatchToProps
             },[])
 
+            function handleSelectContinentChange(e){
+                dispatch(continentFilter(e.target.value)) //despacho la acc que filtra por continente con el e.target.value. Esta accion modifica el estado de countriesFiltered
+                
+            }
+            function handleSubmitSearchName(e){
+                e.preventDefault();
+                dispatch(getCountryByName(search)) //llamo a la funcion que busca por nombre
+                setSearch("") //NO SE SETEA EL VALOR DE SEARCH!!!!
+            }
+            function handleInputChangeName(e){     
+                setSearch(e.target.value) //seteo el estado interno que cree para luego enviarlo en la funcion
+            }
+
+            function onClickCountries(e){
+                dispatch(getAllCountries()) //traigo todos los paises
+            }
+            
     return(
 
-        <div>
-            <section>
+        <div className={classes.div}>
+            <section className={classes.sectionTop}>
                 
-            <div>
-            <Link to="/postActivity">
-            <button>CREAR ACTIVIDAD NUEVA</button>
+            <div className={classes.addActivity}>
+                {/* Link que lleva a la seccion para crear la actividad */}
+            <Link to="/postActivity" className={classes.link}>
+            <button className={classes.btnAddActivity}>CREAR ACTIVIDAD NUEVA</button>
                 </Link>
             </div>
-            <SearchName search={search} setSearch= {setSearch}/>
+           
+
+            <div style={{
+            alignItems: "center",
+            display: "flex",
+            justifyContent: "center",
+            padding: "1%",
+            width: "70%"
+        }}>
+            {/* Seccion para buscar por pais */}
+            <form onSubmit={(e)=>{handleSubmitSearchName(e)}}>
+                <input type="text" name="name" placeholder="Ingrese el nombre del pais..."
+                onChange={(e)=>{handleInputChangeName(e)}}
+                style={{border: "0",borderRadius: "30px",fontSize: "2rem",padding: "10px 30px",overflow: "auto",outline: "none" }}/>
+
+                <div>
+            
+                </div>
+            </form>
+        </div>
+
             </section>
 
             {/* FILTRADOS */}
-            <section>
-                <section>
+            <section className={classes.sectionResult}>
+                <section className={classes.filters}>
+
+                {/* Boton para cargar todos los paises */}
+                <button type="submit" onClick={(e)=>{onClickCountries(e)}}>Cargar todos los paises</button>
+
+
                 <SortPopulation sortByPopulation={sortByPopulation} setSortByPopulation={setSortByPopulation}/>
-                <OrderAlf order={order} setOrder={setOrder}/>
+                <OrderAlf order={order} setOrder={setOrder} />
                 <ActivityFilter activity={activity} setActivity={setActivity}/>
-                <ContinentFilter continent={continent} setContinent={setContinent}/>
+
+               
+               {/* FILTRADO POR CONTINENTE  */}
+                <section style={{padding:"2%", textAlign:"center", width:"80%"}}>
+                <label style={{margin:"1%"}}> FILTRAR POR CONTINENTE:
+               
+               <select onChange={(e)=>{handleSelectContinentChange(e)}}
+               style={{marginLeft:"2%"}}>
+               <option value="all">Todos</option>
+                <option value="Africa">Africa</option>
+                <option value="Americas">Americas</option>
+                <option value="Asia">Asia</option>
+                <option value="Europe">Europe</option>
+                <option value="Oceania">Oceania</option>
+                <option value="Polar">Polar</option>
+
+               </select>
+
+           </label>
+       </section>
                 </section>
 
-            {/* PAISES */}
-            <section>
-                <div>
-                    {/* ACA VAN LOS BOTONES PARA PASAR ÑAS PAGINAS */}
-                    <Prev indexStart={indexStart} setIndexStart={setIndexStart} indexEnd={indexEnd} setIndexEnd={setIndexEnd}/>
-                    <Next indexStart={indexStart} setIndexStart={setIndexStart} indexEnd={indexEnd} setIndexEnd={setIndexEnd}/>
-                </div>
+            {/* SECCION DONDE SE RENDERIZAS LAS COUNTRYCARD  */}
+            <section className={classes.countries}>
+                <div className={classes.pageBtn}>
+                    {/* PAGINADO */}
+                    
+                    <Paged countriesPerPage={countriesPerPage} totalCountries= {countriesFiltered.length} paginado= {paginado} />
 
-                   
-                {Array.isArray(countries) ? 
-                countries.slice(indexStart,indexEnd).map(c=>{
+                 </div>
+
+                   <div className={classes.sectionCountries}>
+
+                   {currentCountries ? 
+                currentCountries.map(c=>{
                    return <CountryCard key={c.id} country={c}/>
                 }):
-                <p>{countries}</p>
+                <p>{countriesFiltered}</p>
             }
-                
+             
+                </div>
             </section>
             </section>
 
@@ -76,17 +152,13 @@ export default function Home(){
 }
 
 
-// import {React} from 'react';
-// import { useState, useEffect } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import {getAllCountries, continentFilter, activityFilter, sortAlf} from '../../actions/actions.js';
-// import { Link } from 'react-router-dom';
-// import CountryCard from '../Country/CountryCard.jsx';
-// import Paging from '../Paging/Paging.jsx'
-// import NavBar from '../NavBar/NavBar.jsx';
 
+// const [indexStart, setIndexStart] = useState(0); //indexFirstCounties, numero de indice sobre el que voy a hacer el slice
+// const [indexEnd, setIndexEnd] = useState(9); //indexLastCountries numero de indice sobre el que voy a hacer el slice
+  {/* <Prev indexStart={indexStart} setIndexStart={setIndexStart} indexEnd={indexEnd} setIndexEnd={setIndexEnd} totalPages={totalPages}/>
 
-// //console.log(getAllCountries())
+                    <Next indexStart={indexStart} setIndexStart={setIndexStart} indexEnd={indexEnd} setIndexEnd={setIndexEnd} totalPages={totalPages} currentPage={currentPage} setCurrentPage={setCurrentPage} countries={countries}/>  */}
+
 // export default function Home(){
 //     const dispatch = useDispatch(); //Hook oara ir despachando las acciones
 //     const allCountries = useSelector((e) => e.countriesLoaded);

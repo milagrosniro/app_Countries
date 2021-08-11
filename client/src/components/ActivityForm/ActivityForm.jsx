@@ -1,88 +1,384 @@
-import React from "react"
-//import {Link} from "react-router-dom"
-import { useDispatch } from "react-redux"
-//importo acciones
-import { postActivity  } from "../../actions/actions"
+import React, { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { postActivity, getCountryByName, getAllCountries } from "../../actions/actions"
+import classes from './activityForm.module.css';
+import axios from "axios";
 
 
-//FUNCION VALIDADORA, formulario controlado
-//input es el estado local
-function validate(info){
+function validate(info, countryId) {
     let errors = {};
-    if(!info.name){
+    if (!info.name) {
         errors.name = "se requiere completar el Nombre";
-    }else if(!info.dificulty){
+    }
+    else if (!info.dificulty) {
         errors.dificulty = "se requiere completar la dificultad"
-    }else if(/[a-zA-Z]+/g.test(info.duration)){
-        errors.dificulty="solo se aceptan numeros"
-    }else if(parseInt(info.duration)>24){
-        errors.dificulty="la actividad debe durar menos de 24hs"
-    }else if(!info.season.length){
-        errors.season= "se requiere seleccionar la temporada de la actividad"
-    }else if(!info.countryId.length){
-        errors.countryId= "por favor selecciona un pais"
+    }
+    
+    else if (typeof parseInt(info.dificulty) !== "number") {
+        errors.dificulty = "solo se aceptan numeros"
+    } else if (!info.duration.length) {
+        errors.duration = "se requiere completar la duracion"
+    } else if (!info.season.length) {
+        errors.season = "se requiere seleccionar la temporada de la actividad"
+    } else if(!countryId){
+        errors.countryId= "se requiere seleccionar pais"
     }
     //si en el input hay un numero >10 y <0 enviar error
     return errors
 }
 
-export default function ActivityForm({activityPost, setActivityPost}){
-    const dispatch = useDispatch();
-    console.log("ACTIVITY POST ", activityPost)
-    // const countriesFiltered = useSelector(e => e.countriesFiltered) //traigo del estado los paises filtrados
+ export default function ActivityForm() {
+     const dispatch = useDispatch()
+      const countries = useSelector(state => state.countriesLoaded)
+      const [errors, setErrors] = useState({})
+      const [countryId, setCountryId]= useState([])
 
-    function onInputChange(e){
-        e.preventDefault();
-      setActivityPost(prev =>{
-            return{
-                ...prev,
-                [e.target.name]: e.target.value
-            }
-        })
-    }
+        const [activityPost, setActivityPost] = useState({ //creo estado con la actividad q se va a postear
+        name: "",
+        dificulty: "",
+        duration: "",
+        season: "",
+        // countryId: [] //hacer una manera que se una el countryId al
+    })
+
+    function handleChange(e) {
+        if(e.target.name === "countryId"){
+            console.log(e.target.value)
+        setCountryId([...countryId, e.target.value])
+        console.log("country IDDD", countryId)
+        }
+        else{
+
+            setActivityPost({
+                ...activityPost,
+                [e.target.name] : e.target.value
+            }); //primero seteo el estado local
+            setErrors(validate({ //luego seteo el estado de errores, pasandole el estado setetado
+                ...activityPost,
+                [e.target.name] : e.target.value
+            }, [...countryId, e.target.value]))
+        }
+
+        console.log("estadosssss", countryId, activityPost)
+        console.log("ERRORES", errors)
+    };
+
+
+  async function handleSubmit(e) {
+
+    e.preventDefault();
+    const activityComplete= {...activityPost, countryId: countryId} //uno el objeto de activityPost con el estado de country
     
-    function submitActivity(e) {
-        e.preventDefault();
-        dispatch(postActivity(activityPost))
-    }
-    return(
-        <form onSubmit={(e)=>{submitActivity(e)}}>
-            <label>NOMBRE:</label>
-            <input type="text" 
-                name="name" 
-                value={activityPost.name} 
-                onChange={(e)=>{onInputChange(e)}}/>
-
-            <label>DIFICULTAD:</label>
-            <input 
-            type="text" 
-            name="dificulty" 
-            value={activityPost.dificulty} 
-            onChange={(e)=>{onInputChange(e)}}
-            />
-
-            <label>DURACION:</label>
-            <input 
-            type="text" 
-            name="duration" 
-            value={postActivity.duration} 
-            onChange={(e)=>{onInputChange(e)}}
+    // if(Object.keys(errors).length === 0){
+        //posteo la actividad desde el axios 
+        const res = await axios.post('http://localhost:3001/activity', activityComplete);
+        // dispatch(postActivity(activityPost)) //despacho la funcion para postear el personaje con el estado
+        alert("Actividad creada!")
+        setActivityPost({ //y seteo el estado 
+            name: "",
+            dificulty: "",
+            duration: "",
+            season: "",
             
-            />
+        });
+        setCountryId([])
+    // } else if(errors){ 
 
-            <label>TEMPORADA:</label>
-            <input 
-            type="text" 
-            name="season" 
-            value={postActivity.season} 
-            onChange={(e)=>{onInputChange(e)}}
-            />
-            <button type="submit">CREAR ACTIVIDAD</button>
-        </form>
-    )
-}
-    // const[errors, setErrors] = useState({})
+    //     alert("Debes completar todos los campos requeridos para agregar la Actividad")
+    // }
     
+    console.log(errors)
+    console.log("prueba", activityComplete)
+}
+
+
+    useEffect(() => {
+        dispatch(getAllCountries()); //hacer una copia por las dudas, para que no cambie segun los cambio de los filtrados
+    }, [dispatch])
+
+return(
+    <section className={classes.name}>
+   {/* BOTON PARA VOLVER A HOME */}
+               <Link to="/countries" style={{ color: "black", margin: "1%", textDecoration: "none" }}>
+                <button className={classes.btnForm} style={{ fontSize: "1rem" }}>VOLVER A HOME</button>
+
+             </Link>
+             <h1>Crea  la actividad turistica</h1>
+            {/* Hago el formulario */}
+            <form className={classes.form} onSubmit={e => {handleSubmit(e)}}>
+
+
+            <div>
+                    <label className={classes.labelForm}>Nombre:</label>
+                    <input className={classes.inputForm} type='text' value={activityPost.name} name='name'
+                     onChange={(e) => {handleChange(e)}}>  
+                    </input>
+                    {/* Debajo de cada input prgeunto si hay algo en error.nombredelinput y si hay algo lo renderizo .TMB ES NECESARIO HACER LA VALIDACION EN EL BACK*/}
+                    {errors.name && (
+                        <p className='error'>{errors.name}</p>
+                    )}
+                </div>
+
+                <div>
+                    <label className={classes.labelForm}>Dificultad:</label>
+                    <input className={classes.inputForm} type='number' value={activityPost.dificulty} name='dificulty'
+                     onChange={e => handleChange(e)}>  
+                    </input>
+                    {/* Debajo de cada input prgeunto si hay algo en error.nombredelinput y si hay algo lo renderizo .TMB ES NECESARIO HACER LA VALIDACION EN EL BACK*/}
+                    {errors.dificulty && ( <p className='error'>{errors.dificulty}</p> )}
+                </div>
+
+                <div>
+                    <label className={classes.labelForm}>Duracion:</label>
+                    <input className={classes.inputForm} type='text' value={activityPost.duration} name='duration'
+                     onChange={e => handleChange(e)}>  
+                    </input>
+                    {/* Debajo de cada input prgeunto si hay algo en error.nombredelinput y si hay algo lo renderizo .TMB ES NECESARIO HACER LA VALIDACION EN EL BACK*/}
+                    {errors.duration && (
+                        <p className='error'>{errors.duration}</p>
+                    )}
+                </div>
+
+                <div>
+                    <label className={classes.labelForm}>Temporada del año:</label>
+                    <select name="season" value={activityPost.season} onChange={e =>handleChange(e)}>
+                        <option value="verano">Verano</option>
+                        <option value="invierno">Invierno</option>
+                        <option value="primavera">Primavera</option>
+                        <option value="otoño">Otoño</option>
+                    </select>
+                    {/* <label className={classes.labelForm}>Temporada del año:</label>
+                    <input className={classes.inputForm} type='text' value={activityPost.season} name='season'
+                     onChange={e => handleChange(e)}>  
+                    </input>
+                    {/* Debajo de cada input prgeunto si hay algo en error.nombredelinput y si hay algo lo renderizo .TMB ES NECESARIO HACER LA VALIDACION EN EL BACK*/}
+                    {errors.season && (
+                        <p className='error'>{errors.season}</p>
+                    )} 
+                </div>
+                     <label className={classes.labelForm}>Selecciona el Pais</label>
+                    <select name="countryId"  onChange={e =>handleChange(e)} multiple> 
+                                      
+                    {countries.map(c =>(<option key={c.id} value={c.id}>{c.name}</option>)) }
+                   
+                    </select>
+                   
+                    {errors.countryId && ( <p className='error'>{errors.countryId}</p>)}
+
+                    <button className={classes.btnForm} type='submit'>Crear Actividad</button>
+            </form>
+    </section>
+)
+   
+ }
+
+
+//     function handleSelect(e) {
+//         console.log(e.target.value)
+//         setCountryId([...countryId, e.target.value])
+//         console.log("country IDDD", countryId)
+//     //   setActivityPost({
+//     //        ...activityPost,
+//     //     //    countryId: [
+//     //     //        ...activityPost.countryId, //le paso lo que ya habia y le agrego el e.targe.value
+//     //     //        e.target.value
+//     //     //    ]
+//     //    });
+      
+//        setErrors(validate({ //luego seteo el estado de errores, pasandole el estado setetado
+//         ...activityPost,
+//         [e.target.name] : e.target.value
+//     }))
+    
+//    };
+
+
+// export default function ActivityForm() {
+//     const dispatch = useDispatch();
+//     const countrieByName = useSelector(e => e.countriesFiltered); //traigo los paises filtrados del estado
+//     const [errors, setErrors] = useState({})
+//     const [name, setName] = useState("") //estado para el input
+
+//     useEffect(() => {
+//         dispatch(getCountryByName(name))
+//     }, [name]) //despacho la funcion de obtener pais por nombre cada vez q hay un cambio en el estado de nombre.
+//     //esta funcion modifica el countriesFiltered
+
+//     const [activityPost, setActivityPost] = useState({ //creo estado con la actividad q se va a postear
+//         name: "",
+//         dificulty: "",
+//         duration: "",
+//         season: "",
+//         countryId: [] //hacer una manera que se una el countryId al
+//     })
+
+
+//     //agrego el id del Pais sobre el q quiero agergar la activ
+//     function handleChooseButton(id) {
+//         setActivityPost({
+//             ...activityPost,
+//             countryId: [...activityPost.countryId, id]
+//         })
+        
+//     }
+
+//     function handleNameChange(e) {
+//         e.preventDefault();
+//         setName(e.target.value); //actualizo el estado name
+//     }
+
+//     function onInputChange(e) {
+//         e.preventDefault(); //actualizo el estado de activity
+//         setActivityPost(prev => {
+//             return {
+//                 ...prev,
+//                 [e.target.name]: e.target.value
+//             }
+//         })
+//         // setErrors(validate({
+//         //             ...errors,
+//         //             [e.target.name]: e.target.value
+//         //         }))
+
+//     }
+
+//     function submitActivity(e) {
+//         e.preventDefault();
+//         console.log("ACTIVIDAD POR POSTEAR", activityPost)
+//         dispatch(postActivity(activityPost)) //despacho la funcion que postea la actividad
+//          console.log("ACTIVIDAD POSTEADA", activityPost)
+//         // setErrors(validate({
+//         //     ...errors,
+//         //     [e.target.name]: e.target.value
+//         // }))
+//     }
+//     return (
+
+//         <section>
+//             {/* BOTON PARA VOLVER A HOME */}
+//             <Link to="/countries" style={{ color: "black", margin: "1%", textDecoration: "none" }}>
+//                 <button style={{ fontSize: "1rem" }}>VOLVER A HOME</button>
+//             </Link>
+
+//             <section style={{ width: "100vh" }}>
+//                 <span style={{ fontSize: "2rem", textAlign: "end", display: "flex" }}>CREA UNA ACTIVIDAD</span>
+//             </section>
+
+//             <div style={{
+//                 alignItems: "center", backgroundColor: "#EDFFD9", borderRadius: "0 20px 0 20px", display: "flex", flexDirection: "column", flexWrap: "nowrap", height: "100%", justifyContent: "center",
+//                 marginBottom: "2%", width: "100%"
+//             }}>
+
+//                 {/* // STYLES FORM */}
+//                 <form onSubmit={(e) => { submitActivity(e) }}
+//                     style={{ alignItems: "center", display: "flex", flexDirection: "column" }}>
+//                     {/* LABEL */}
+//                     <label
+//                         style={{ fontSize: "1rem", margin: "3%" }}>NOMBRE:</label>
+//                     {errors.name && <p>{errors.name}</p>}
+
+//                     {/* INPUT */}
+//                     <input type="text"
+//                         name="name"
+//                         value={activityPost.name}
+//                         onChange={(e) => { onInputChange(e) }}
+
+//                         style={{ fontSize: "1rem", margin: "1%", textAlign: "center" }} />
+
+//                     {/* LABEL */}
+//                     <label style={{ fontSize: "1rem", margin: "3%" }}>DIFICULTAD: <span style={{ fontSize: "20px" }}>del 1 al 5</span></label>
+//                     {errors.dificulty && <p>{errors.dificulty}</p>}
+
+//                     {/* INPUT */}
+//                     <input
+//                         type="text"
+//                         name="dificulty"
+//                         value={activityPost.dificulty}
+//                         onChange={(e) => { onInputChange(e) }}
+//                         style={{ fontSize: "1rem", margin: "1%", textAlign: "center" }}
+//                     />
+
+//                     <label
+//                         style={{ fontSize: "1rem", margin: "3%" }}>DURACION: <span style={{ fontSize: "20px" }}>en minutos</span></label>
+//                     {errors.duration && <p>{errors.duration}</p>}
+//                     <input
+//                         type="text"
+//                         name="duration"
+//                         value={postActivity.duration}
+//                         onChange={(e) => { onInputChange(e) }}
+//                         style={{ fontSize: "1rem", margin: "1%", textAlign: "center" }}
+//                     />
+
+//                     <label style={{ fontSize: "1rem", margin: "3%" }}>TEMPORADA:<span style={{ fontSize: "20px" }}>verano,otoño,invierno,primavera</span></label>
+//                     {errors.season && <p>{errors.season}</p>}
+//                     <input
+//                         type="text"
+//                         name="season"
+//                         value={postActivity.season}
+//                         onChange={(e) => { onInputChange(e) }}
+//                         style={{ fontSize: "1rem", margin: "1%", textAlign: "center" }}
+//                     />
+
+//                     {/* BUSCAR PAIS */}
+
+//                     <input
+//                         placeholder="Buscar pais por nombre..."
+//                         autoComplete="off"
+//                         value={name}
+//                         type="text"
+//                         onChange={(e) => handleNameChange(e)}
+//                     ></input>
+//                     {/* BUTTON */}
+//                     <button type="submit" style={{ fontSize: "1rem", margin: "3%" }}>CREAR ACTIVIDAD</button>
+//                     </form>
+
+//                     {/* STYLEDULLIST */}
+//                     <p style={{ columns: "3", textAlign: "justify" }}>
+
+//                         <div>
+
+//                             <ul style={{ backgroundColor: "#EDFFD9", borderRadius: "0 20px", height: "40vh", listStyle: "none", overFlow: "hidden", overFlowY: "scroll" }}>
+//                                 {/* recorro todos los paises y muestro su nombre con un boton para asociarlos a la activ */}
+//                                 {countrieByName ? countrieByName.map(c =>
+//                                     <div >
+//                                         {/* STYLED ITEM */}
+//                                         <span>
+
+//                                             <li key={c.id} style={{ margin: "5px" }}>
+//                                                 {c.name}
+//                                                 <button value=""onClick={() => { handleChooseButton(c.id) }}
+//                                                     style={{ marginLeft: "5px", backgroundColor: "#EDFFD9" }}>AGREGAR</button>
+//                                             </li>
+//                                         </span>
+//                                     </div>
+//                                 ) :
+//                                     <li>Pais no encontrado</li>
+//                                 }
+//                             </ul>
+//                         </div>
+//                     </p>
+
+              
+//             </div>
+//         </section>
+//     )
+// }
+
+
+
+
+
+
+
+//FUNCION VALIDADORA, formulario controlado
+//input es el estado local
+
+
+
+
+    // const[errors, setErrors] = useState({})
+
     //ejecuto la funcion de obtener todos los paises al renderizar el componente por primera vez
     // useEffect(()=>{
     //     dispatch(getAllCountries()) //reemplaza el mapDispatchToProps
@@ -146,7 +442,7 @@ export default function ActivityForm({activityPost, setActivityPost}){
     //         season:"",
     //         countryId:[]
     //        });
-           
+
     //     }else{
     //         return alert("No se ha podido agregar la actividad, intetalo de nuevo")
     //     }
@@ -194,7 +490,7 @@ export default function ActivityForm({activityPost, setActivityPost}){
 //                         <option value="winter">Invierno</option>
 //                         <option value="spring">Primavera</option>
 //                         <option value="summer">Verano</option>
-                        
+
 //                         </select> 
 //                 </div>
 //                 <div>

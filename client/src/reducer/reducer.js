@@ -1,15 +1,14 @@
 //IMPORTO LAS CONSTANTES
 
 
-import { SORT_BY_POPULATION,ACTIVITY_FILTER, CONTINENT_FILTER, GET_COUNTRIES, GET_COUNTRY_BY_ID, GET_COUNTRY_BY_NAME, ORDER, POST_ACTIVITY} from "../actions/constants";
+import { SORT_BY_POPULATION,ACTIVITY_FILTER, CONTINENT_FILTER, GET_COUNTRIES, GET_COUNTRY_BY_ID, GET_COUNTRY_BY_NAME, ORDER, POST_ACTIVITY, GET_ALL_ACTIVITIES, ADD_ACTIVITY_COUNTRY} from "../actions/constants";
 
 const initialState = {
     countriesLoaded: [],
     countriesFiltered: [],
     countryDetail: {},
-     allActivities: [],
+    allActivities: [],
     activityPost:{},
-    // loading: false
 }
 
 
@@ -50,7 +49,7 @@ function rootReducer(state = initialState, action){
                     }
                     return 0;
                 }
-            }else{
+            }else {
                 sortPopulation = function(a, b) {
                     if (a.population > b.population) {
                         return -1;
@@ -62,10 +61,10 @@ function rootReducer(state = initialState, action){
                     return 0;
                 }
             }
-            let countriesByPopulation = state.countriesLoaded.sort(sortPopulation)
+            let countriesByPopulation = state.countriesFiltered.sort(sortPopulation)
             return{
                 ...state,
-                countriesLoaded: countriesByPopulation
+                countriesFiltered: countriesByPopulation
             }
         }
         
@@ -96,7 +95,7 @@ function rootReducer(state = initialState, action){
                 return 0;
             }
         }
-        let countriesByName = state.countriesLoaded.sort(orderAlfName)
+        let countriesByName = state.countriesFiltered.sort(orderAlfName)
         return{
             ...state,
             countriesFiltered: countriesByName
@@ -123,7 +122,11 @@ function rootReducer(state = initialState, action){
             if (action.payload === "all") {
                 countriesFilterActivity = countriesAll;
             } else {
-                countriesFilterActivity = state.allActivities.filter(a => a.name === action.payload)[0].countries.map(countryAct => countryAct)
+                //filtro todas las actividades por nombre
+                // countriesFilterActivity = state.allActivities.filter(a => a.name === action.payload)[0].countriesLoaded.map(countryAct => countryAct)
+                countriesFilterActivity= state.countriesLoaded.filter(c => {
+                    return c.activities.some(a => a.name === action.payload)
+                })
             }
             return{
                 ...state,
@@ -137,6 +140,25 @@ function rootReducer(state = initialState, action){
                 activityPost: action.payload
             }
         }
+
+        case GET_ALL_ACTIVITIES:{
+            return{
+                ...state,
+                allActivities: action.payload
+            }
+        }
+        // case ADD_ACTIVITY_COUNTRY:{
+        //     //filtro los paises que coinciden con el id enviado en la actividadCompleta
+        //     const countriesAddActiv = state.countriesLoaded.map(c =>{ if(c.id === action.payload.countryId){
+        //         c.activities=[...c.activities, action.payload]
+        //     }} ) 
+
+
+            // return{
+            //     ...state,
+
+            // }
+       // }
         default: return state
     }
 }

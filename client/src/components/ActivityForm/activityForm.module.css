@@ -1,0 +1,51 @@
+
+.div{
+    background-image: url('../Landing/world.jpg');
+  background-position-y: center;
+  background-size: cover;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  height: 100vh;
+  justify-content: space-between;
+}
+
+.form{
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.labelForm{
+    font-size: 2rem;
+    margin: 3%;
+}
+
+.inputForm{
+    font-size: 1rem;
+    margin: 1%;
+    text-align: center;
+}
+
+.btnForm{
+    /* font-size: 1.5rem;
+    margin: 3%; */
+    -webkit-box-shadow: 1px 1px 39px 0px rgba(0,0,0,0.43);
+    -moz-box-shadow: 1px 1px 39px 0px rgba(0,0,0,0.30);
+    background-color: #04ADBF;
+    border: 1px solid #04ADBF;
+    border-radius: 30px;
+    box-shadow: 1px 1px 39px 0px rgba(0,0,0,0.43);
+    font-family: 'Quicksand', sans-serif;
+    font-size: 2rem;
+    padding: 10px 30px;
+}
+
+/* .option{
+    font-size: 20px
+} */
+
+.span{
+    font: 20px;
+}
+

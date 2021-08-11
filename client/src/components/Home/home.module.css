@@ -1,0 +1,74 @@
+
+
+.link{
+    color: black;
+    text-decoration: none;
+    margin: 1%;
+}
+
+.sectionTop{
+    
+    align-items: center;
+    background-color: #D2EFFA;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+}
+
+.sectionResult{
+    background-color: #D2EFFA;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+.filters{
+    align-items: center;
+    background-color: #D2EFFA;
+    display: flex;
+    width: 50vh;
+    flex-direction: column;
+}
+
+.countries{
+    display: flex;
+    width: 150vh;
+    flex-direction: column;
+}
+
+.addActivity{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    padding: 1%;
+    width: 40vh;
+}
+
+.btnAddActivity{
+    -moz-box-shadow: 1px 1px 39px 0px rgba(0,0,0,0.30);
+    -webkit-box-shadow: 1px 1px 39px 0px rgba(0,0,0,0.43);
+    background-color: #04ADBF;
+    border: 1px solid #04ADBF;
+    border-radius: 30px;
+    box-shadow: 1px 1px 39px 0px rgba(0,0,0,0.30);
+    font-size: 2rem;
+    padding: 10px 30px;
+    
+}
+
+.pageBtn{
+    display: flex;
+    justify-content: center;
+}
+
+.sectionCountries{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    
+}
+

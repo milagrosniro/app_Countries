@@ -1,0 +1,44 @@
+.sectionActCont{
+    padding: 2%;
+    text-align: center;
+    width: 80%;
+}
+
+.labelActCont{
+    margin: 1%;
+}
+
+.selectActCont{
+    margin-left: 2%;
+}
+
+.btnActCont{
+    margin-left: 1%;
+    border-radius: 28px;
+
+}
+
+.btnNamePop{
+    margin: 2%;
+    border-radius: 28px;
+}
+
+.searchNamed{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    padding: 1%;
+    width: 70%;
+}
+
+.searchNameIn{
+    border: 0;
+    border-radius: 30px;
+    font-size: 2rem;
+    padding: 10px 30px;
+    overflow: auto;
+    outline: none;
+}
+
+
+   

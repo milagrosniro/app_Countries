@@ -1,12 +1,12 @@
 
 const { Router } = require('express');
-const { Country, Activity } = require('../db.js'); //importo los modelos conectados
+const { Country, Activity, Activity_Country } = require('../db.js'); //importo los modelos conectados
 const { Op } = require('sequelize')
 const axios = require('axios');
 
 const router = Router();
 
-
+//Precargado de datos
 async function dataBase(req, res, next) {
     try {
         const allCountries = await Country.findAll(); //busco los paises en la DB
@@ -34,7 +34,7 @@ async function dataBase(req, res, next) {
             Promise.all(countriesDB)
                 .then(response => next())
         } else { //si ya estan los datos en la DB que continue
-            return next()
+            return next();
         }
     } catch (err) {
         next(err)
@@ -52,10 +52,10 @@ async function dataBase(req, res, next) {
 //mostrar todos los paises 
 
 
-router.get("/", dataBase, async(req, res, next) => {
+router.get("/", dataBase, async(req, res, next) => { //todos los paies //paises por nombre
     const { name } = req.query;
     try {
-        if(name) { //Si me pasan un nombre por Query
+        if(name) { //Si me pasan un nombre por Query, lo busco en la DB
             const countries = await Country.findAll({
                 attributes: ["id", "name", "flag", "capital","region", "population"],
                 where: {
@@ -81,6 +81,78 @@ router.get("/", dataBase, async(req, res, next) => {
         return next(err)
     }
 })
+
+
+
+
+// // GET /countries/{idPais}:
+// // Obtener el detalle de un país en particular
+// // Debe traer solo los datos pedidos en la ruta de detalle de país
+// // Incluir los datos de las actividades turísticas correspondientes
+
+router.get('/:id', dataBase, async (req, res, next) => {
+    let { id } = req.params;
+    id = id.toLocaleUpperCase() //transformo lo que recibo por params en mayuscula para no tener problema con la bsuqueda
+   
+    let activitiesId=[]
+    let detailActivities= []
+    let countryActiv= {}
+    try {
+        let country = await Country.findByPk(id, { //detalle pais
+            include: { model: Activity} })
+            console.log("COUNTRY",country)
+       
+            let activities = await Activity_Country.findAll({where:{countryId: id}})  //traer datos de ACtivity_Country trae id de paisess y activ con id de query
+
+        console.log("ACTIVITYCOUNTRIE",activities)
+        
+            for(let i=0; i <activities.length; i++){
+                activitiesId.push(activities[i].dataValues.activityId)
+            }
+
+            console.log("ACTIVITIESID", activitiesId)
+
+            for(let i=0; i<activitiesId.length; i++){
+                const find= await Activity.findByPk(activitiesId[i])
+                detailActivities.push(find.dataValues)
+            }
+
+            console.log("detailACtivity", detailActivities)
+            countryActiv= await {...country.dataValues, activities: detailActivities}
+
+        //for q recorre countryActivities(tiene los id de todas las actividades del pais) para que en cada iteracion haga un findOne de la actividad(de cada elemento de CountryActivity) entrar a la prop del id de la activ,
+        //guardarlos en una const e ir pusheando en un array para tener todas la ctividades del pais.
+
+        //[ de afuera, q tiene las actividades del pais, agregarlo como propiedad a country] country.activity= [array]
+
+        //res.json(country)
+
+        
+            return res.json(countryActiv)
+        
+    } catch (err) {
+        next(err)
+    }
+})
+
+
+// router.get('/:idPais', async (req,res, next)=>{
+//      const {idPais} = req.params;
+
+//     try{
+//        let country = await Country.findByPk(idPais, {
+//             include: {
+//                 model: Activity,       
+//             }
+//         })
+//         return res.json(country)
+
+//    }catch(error){
+//        next(error)
+//     }
+
+// } )
+
 
 // router.get('/', async (req, res,next) => {
 //     const {name, page, order} = req.query
@@ -139,47 +211,6 @@ router.get("/", dataBase, async(req, res, next) => {
 //     }
 // }
 // })
-
-
-// // GET /countries/{idPais}:
-// // Obtener el detalle de un país en particular
-// // Debe traer solo los datos pedidos en la ruta de detalle de país
-// // Incluir los datos de las actividades turísticas correspondientes
-
-router.get('/:id', dataBase, async (req, res, next) => {
-    let { id } = req.params;
-    id = id.toLocaleUpperCase() //transformo lo que recibo por params en mayuscula para no tener problema con la bsuqueda
-
-    try {
-        let country = await Country.findByPk(id, {
-            include: { model: Activity} })
-        if(country){
-            return res.json(country)
-        }else{
-            return res.send("No se encontro el pais")
-        }
-    } catch (err) {
-        next(err)
-    }
-})
-
-
-// router.get('/:idPais', async (req,res, next)=>{
-//      const {idPais} = req.params;
-
-//     try{
-//        let country = await Country.findByPk(idPais, {
-//             include: {
-//                 model: Activity,       
-//             }
-//         })
-//         return res.json(country)
-
-//    }catch(error){
-//        next(error)
-//     }
-
-// } )
 
 
 module.exports = router;
