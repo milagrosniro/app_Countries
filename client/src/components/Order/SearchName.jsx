@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { getCountryByName } from '../../actions/actions';
+import classes from './order&filter.module.css'
 
 export default function SearchName({search, setSearch}){
     const dispatch = useDispatch();
@@ -18,24 +19,11 @@ export default function SearchName({search, setSearch}){
 
     
     return(
-        <div style={{
-            alignItems: "center",
-            display: "flex",
-            justifyContent: "center",
-            padding: "1%",
-            width: "70%"
-        }}>
+        <div className={classes.divSearchName}>
             <form onSubmit={(e)=>{handleSubmit(e)}}>
-                <input type="search" name="name" placeholder="Ingrese el nombre del pais..."
+                <input className={classes.inputSearchName} type="search" name="name" placeholder="Ingrese el nombre del pais..."
                 onChange={(e)=>{handleInputChange(e)}}
-                style={{
-                    border: "0",
-            borderRadius: "30px",
-            fontSize: "2rem",
-            padding: "10px 30px",
-            overflow: "auto",
-            outline: "none"
-                }}/>
+               />
 
                 <div>
 

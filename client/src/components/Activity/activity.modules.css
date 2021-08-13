@@ -10,12 +10,14 @@
     
 }
 
-.page{
+
+.pageSection{
     background-color: #D6A886;
     display: flex;
     height: 100vh;
     flex-direction: column;
 }
+
 
 
 .sectionTop{
@@ -26,3 +28,4 @@
     justify-content: space-around;
     margin-bottom: 1%
 }
+

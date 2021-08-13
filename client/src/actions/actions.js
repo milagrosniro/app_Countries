@@ -90,6 +90,7 @@ export function getAllActivities(){
     }
 }
 
+
 export function addActivityCountry(payload){ //le mando por payload al ActivityComplete
     return function(dispatch){
         return dispatch({

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { sortAlf } from '../../actions/actions';
-//import classes from './order&filter.module.css'
+import classes from './order.module.css'
 
 export default function OrderAlf({order, setOrder}){
 
@@ -19,8 +19,7 @@ export default function OrderAlf({order, setOrder}){
     }
 
     return(
-        <button onClick={(e)=>{handleOnClick(e)}} style={{marginLeft: "1%",
-        borderRadius: "28px"}}>ORDENAR ALFABETICAMENTE
+        <button className={classes.btnOrderAlf} onClick={(e)=>{handleOnClick(e)}} >ORDENAR ALFABETICAMENTE
         
         </button>
     )

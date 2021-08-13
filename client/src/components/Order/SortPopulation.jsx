@@ -1,6 +1,7 @@
 import React from 'react';
 import {useDispatch} from 'react-redux';
 import { orderByPopulation } from '../../actions/actions';
+import classes from './order.module.css'
 
 export default function SortPopulation({sortByPopulation, setSortByPopulation}){
      const dispatch = useDispatch();
@@ -19,6 +20,6 @@ export default function SortPopulation({sortByPopulation, setSortByPopulation}){
     }
 
     return(
-        <button onClick={(e)=>{handleOnClick(e)}} style={{margin: "2%"}}> Ordenar segun la Poblacion</button>
+        <button className={classes.btnPopu} onClick={(e)=>{handleOnClick(e)}} > Ordenar segun la Poblacion</button>
     )
 }

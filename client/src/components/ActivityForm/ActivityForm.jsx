@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
-import { postActivity, getCountryByName, getAllCountries } from "../../actions/actions"
+import { postActivity, getCountryByName, getAllCountries, activityFilter } from "../../actions/actions"
 import classes from './activityForm.module.css';
 import axios from "axios";
 
@@ -13,28 +13,30 @@ function validate(info, countryId) {
     }
     else if (!info.dificulty) {
         errors.dificulty = "se requiere completar la dificultad"
+    } else if (info.dificulty > 5 || info.dificulty < 1) {
+        errors.dificulty = "se requiere colocar una dificultad del 1-5"
     }
-    
-    else if (typeof parseInt(info.dificulty) !== "number") {
-        errors.dificulty = "solo se aceptan numeros"
-    } else if (!info.duration.length) {
+    else if (!info.duration) {
         errors.duration = "se requiere completar la duracion"
-    } else if (!info.season.length) {
-        errors.season = "se requiere seleccionar la temporada de la actividad"
-    } else if(!countryId){
-        errors.countryId= "se requiere seleccionar pais"
+    } else if (info.duration > 24) {
+        errors.duration = "agregar duracion menor a 24 hs"
     }
-    //si en el input hay un numero >10 y <0 enviar error
+    else if (!info.season.length) {
+        errors.season = "se requiere seleccionar la temporada de la actividad"
+    } else if (!countryId.length) {
+        errors.countryId = "se requiere seleccionar pais"
+    }
+
     return errors
 }
 
- export default function ActivityForm() {
-     const dispatch = useDispatch()
-      const countries = useSelector(state => state.countriesLoaded)
-      const [errors, setErrors] = useState({})
-      const [countryId, setCountryId]= useState([])
+export default function ActivityForm() {
+    const dispatch = useDispatch()
+    const countries = useSelector(state => state.countriesLoaded)
+    const [errors, setErrors] = useState({})
+    const [countryId, setCountryId] = useState([])
 
-        const [activityPost, setActivityPost] = useState({ //creo estado con la actividad q se va a postear
+    const [activityPost, setActivityPost] = useState({ //creo estado con la actividad q se va a postear
         name: "",
         dificulty: "",
         duration: "",
@@ -43,135 +45,131 @@ function validate(info, countryId) {
     })
 
     function handleChange(e) {
-        if(e.target.name === "countryId"){
-            console.log(e.target.value)
-        setCountryId([...countryId, e.target.value])
-        console.log("country IDDD", countryId)
+        if (e.target.name === "countryId") {
+            setCountryId([...countryId, e.target.value])
+            //console.log("country IDDD", countryId)
         }
-        else{
-
+        else {
             setActivityPost({
                 ...activityPost,
-                [e.target.name] : e.target.value
+                [e.target.name]: e.target.value
             }); //primero seteo el estado local
-            setErrors(validate({ //luego seteo el estado de errores, pasandole el estado setetado
-                ...activityPost,
-                [e.target.name] : e.target.value
-            }, [...countryId, e.target.value]))
         }
+        setErrors(validate({ //luego seteo el estado de errores, pasandole el estado setetado
+            ...activityPost,
+            [e.target.name]: e.target.value
+        }, countryId))
 
         console.log("estadosssss", countryId, activityPost)
         console.log("ERRORES", errors)
     };
 
 
-  async function handleSubmit(e) {
+    async function handleSubmit(e) {
 
-    e.preventDefault();
-    const activityComplete= {...activityPost, countryId: countryId} //uno el objeto de activityPost con el estado de country
-    
-    // if(Object.keys(errors).length === 0){
+        e.preventDefault();
+        const activityComplete = { ...activityPost, countryId: countryId } //uno el objeto de activityPost con el estado de country
+
+        //  if(Object.keys(errors).length === 0){
         //posteo la actividad desde el axios 
         const res = await axios.post('http://localhost:3001/activity', activityComplete);
-        // dispatch(postActivity(activityPost)) //despacho la funcion para postear el personaje con el estado
         alert("Actividad creada!")
         setActivityPost({ //y seteo el estado 
             name: "",
             dificulty: "",
             duration: "",
             season: "",
-            
         });
         setCountryId([])
-    // } else if(errors){ 
 
-    //     alert("Debes completar todos los campos requeridos para agregar la Actividad")
-    // }
-    
-    console.log(errors)
-    console.log("prueba", activityComplete)
-}
+        //  } else if(Object.keys(errors).length > 0){ 
+
+        //     alert("Debes completar todos los campos requeridos para agregar la Actividad")
+        //  }
+
+        console.log(errors)
+        console.log("prueba", activityComplete)
+    }
 
 
     useEffect(() => {
         dispatch(getAllCountries()); //hacer una copia por las dudas, para que no cambie segun los cambio de los filtrados
     }, [dispatch])
 
-return(
-    <section className={classes.name}>
-   {/* BOTON PARA VOLVER A HOME */}
-               <Link to="/countries" style={{ color: "black", margin: "1%", textDecoration: "none" }}>
-                <button className={classes.btnForm} style={{ fontSize: "1rem" }}>VOLVER A HOME</button>
+    return (
+        <section className={classes.name}>
 
-             </Link>
-             <h1>Crea  la actividad turistica</h1>
+
+            <h1>Crea  la actividad turistica</h1>
+            {/* BOTON PARA VOLVER A HOME */}
+            <Link to="/countries" className={classes.linkBtn}>
+                <button className={classes.btnForm} >VOLVER A HOME</button>
+
+            </Link>
+
             {/* Hago el formulario */}
-            <form className={classes.form} onSubmit={e => {handleSubmit(e)}}>
+            <form className={classes.form} onSubmit={e => { handleSubmit(e) }}>
 
-
-            <div>
+                <div className={classes.form1}>
                     <label className={classes.labelForm}>Nombre:</label>
                     <input className={classes.inputForm} type='text' value={activityPost.name} name='name'
-                     onChange={(e) => {handleChange(e)}}>  
+                        onChange={(e) => { handleChange(e) }}>
+                        {/* Debajo de cada input prgeunto si hay algo en error.nombredelinput y si hay algo lo renderizo .TMB ES NECESARIO HACER LA VALIDACION EN EL BACK*/}
+                        {errors.name && (<p >{errors.name}</p>)}
                     </input>
-                    {/* Debajo de cada input prgeunto si hay algo en error.nombredelinput y si hay algo lo renderizo .TMB ES NECESARIO HACER LA VALIDACION EN EL BACK*/}
-                    {errors.name && (
-                        <p className='error'>{errors.name}</p>
-                    )}
                 </div>
 
-                <div>
+                <div className={classes.form1}>
                     <label className={classes.labelForm}>Dificultad:</label>
                     <input className={classes.inputForm} type='number' value={activityPost.dificulty} name='dificulty'
-                     onChange={e => handleChange(e)}>  
+                        onChange={e => handleChange(e)}>
                     </input>
                     {/* Debajo de cada input prgeunto si hay algo en error.nombredelinput y si hay algo lo renderizo .TMB ES NECESARIO HACER LA VALIDACION EN EL BACK*/}
-                    {errors.dificulty && ( <p className='error'>{errors.dificulty}</p> )}
+                    {errors.dificulty && (<p >{errors.dificulty}</p>)}
                 </div>
 
-                <div>
-                    <label className={classes.labelForm}>Duracion:</label>
+                <div className={classes.form1}>
+                    <label className={classes.labelForm}>Duracion (en horas) :</label>
                     <input className={classes.inputForm} type='text' value={activityPost.duration} name='duration'
-                     onChange={e => handleChange(e)}>  
+                        onChange={e => handleChange(e)}>
                     </input>
                     {/* Debajo de cada input prgeunto si hay algo en error.nombredelinput y si hay algo lo renderizo .TMB ES NECESARIO HACER LA VALIDACION EN EL BACK*/}
-                    {errors.duration && (
-                        <p className='error'>{errors.duration}</p>
-                    )}
+                    {errors.duration && (<p className='error'>{errors.duration}</p>)}
                 </div>
 
-                <div>
+                <div className={classes.form1}>
                     <label className={classes.labelForm}>Temporada del año:</label>
-                    <select name="season" value={activityPost.season} onChange={e =>handleChange(e)}>
+                    <select name="season" value={activityPost.season} onChange={e => handleChange(e)}>
                         <option value="verano">Verano</option>
                         <option value="invierno">Invierno</option>
                         <option value="primavera">Primavera</option>
                         <option value="otoño">Otoño</option>
                     </select>
-                    {/* <label className={classes.labelForm}>Temporada del año:</label>
-                    <input className={classes.inputForm} type='text' value={activityPost.season} name='season'
-                     onChange={e => handleChange(e)}>  
-                    </input>
-                    {/* Debajo de cada input prgeunto si hay algo en error.nombredelinput y si hay algo lo renderizo .TMB ES NECESARIO HACER LA VALIDACION EN EL BACK*/}
-                    {errors.season && (
-                        <p className='error'>{errors.season}</p>
-                    )} 
-                </div>
-                     <label className={classes.labelForm}>Selecciona el Pais</label>
-                    <select name="countryId"  onChange={e =>handleChange(e)} multiple> 
-                                      
-                    {countries.map(c =>(<option key={c.id} value={c.id}>{c.name}</option>)) }
-                   
-                    </select>
-                   
-                    {errors.countryId && ( <p className='error'>{errors.countryId}</p>)}
 
-                    <button className={classes.btnForm} type='submit'>Crear Actividad</button>
+                    {errors.season && (<p >{errors.season}</p>)}
+                </div>
+
+                <div className={classes.form1}>
+
+                    <label className={classes.labelForm}>Selecciona el Pais</label>
+
+                    <select name="countryId" onChange={e => handleChange(e)} >
+
+                        {countries.map(c => (<option key={c.id} value={c.id}>{c.name}</option>))}
+
+                    </select>
+                    {errors.countryId && (<p >{errors.countryId}</p>)}
+
+
+
+                </div>
+
+                <button className={classes.btnForm2} type='submit'>Crear Actividad</button>
             </form>
-    </section>
-)
-   
- }
+        </section>
+    )
+
+}
 
 
 //     function handleSelect(e) {
@@ -185,12 +183,12 @@ return(
 //     //     //        e.target.value
 //     //     //    ]
 //     //    });
-      
+
 //        setErrors(validate({ //luego seteo el estado de errores, pasandole el estado setetado
 //         ...activityPost,
 //         [e.target.name] : e.target.value
 //     }))
-    
+
 //    };
 
 
@@ -220,7 +218,7 @@ return(
 //             ...activityPost,
 //             countryId: [...activityPost.countryId, id]
 //         })
-        
+
 //     }
 
 //     function handleNameChange(e) {
@@ -359,7 +357,7 @@ return(
 //                         </div>
 //                     </p>
 
-              
+
 //             </div>
 //         </section>
 //     )

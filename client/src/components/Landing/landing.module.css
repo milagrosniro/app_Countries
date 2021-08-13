@@ -1,84 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 
 .landing{
-  background-image: url('world.jpg');
+  background-image: url('../Landing/fondo.png');
   background-position-y: center;
   background-size: cover;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
   height: 100vh;
-  justify-content: space-between;
 }
 
-.left{
-  align-items: flex-start;
+.container {
   display: flex;
   flex-direction: column;
-  flex-wrap: nowrap;
   justify-content: center;
-  width: 40%;
-}
-
-.leftData{
   align-items: center;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  justify-content: center;
-}
-.title{
-  /* color: black;
-  font-family: "Gill Sans Extrabold", Helvetica, sans-serif;
-  font-size: 7rem; */
-  color: #ff9900;
-  font-family: 'Noto Sans JP', sans-serif;
-    text-decoration: none;
-    transition: all 0.5s;
-    background-color: transparent;
-    text-align: center;
-    font-size: 7em;
-    line-height: 1.15;
-    -webkit-text-size-adjust: 100%;
-    cursor: pointer;
-   
-  
-  -moz-transition: all 0.5s;
-  
 }
 
+.title {
+  color: #fff;
+  font-size: 3rem;
+  text-shadow: 0 0 5px #a945c7, 0 0 15px #a945c7, 0 0 30px #a945c7, 0 0 50px #a945c7;
+}
 
-.btn{
+.neon {
+  margin-top: 8rem;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 0.8rem;
+  border: 1px solid #fff;
+  box-shadow: 0 0 5px #a945c7, 0 0 15px #a945c7, 0 0 30px #a945c7, 0 0 50px #a945c7;
+}
 
-  /* -webkit-box-shadow: 1px 1px 39px 0px rgba(0,0,0,0.43);
-  -moz-box-shadow: 1px 1px 39px 0px rgba(0,0,0,0.30);
-  background-color: #04ADBF;
-  border: 1px solid #04ADBF;
-  border-radius: 30px;
-  box-shadow: 1px 1px 39px 0px rgba(0,0,0,0.43);
-  font-family: 'Quicksand', sans-serif;
-  font-size: 2rem;
-  padding: 10px 30px; */
+.btn {
+  margin-top: 3rem;
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+  display: inline-block;
+  padding: 15px 30px;
+  color: #fff;
+  letter-spacing: 4px;
+  font-size: 24px;
+  text-decoration: none;
+  overflow: hidden;
+  transition: 0.2s;
+}
 
-  cursor: pointer;
-  -webkit-appearance: button;
-  color: #ffc107;
-    background-color: transparent;
-    background-image: none;
-    border-color: #ffc107;
-    display: inline-block;
-    font-weight: 400;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    user-select: none;
-    border: 1px solid transparent;
-    padding: .375rem .75rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    border-radius: .25rem;
-    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+.btn:hover {
+  background: #a945c7;
+  box-shadow: 0 0 10px #a945c7, 0 0 40px #a945c7, 0 0 80px #a945c7;
+  transition-delay: 1s;
+}
 
+.btn span {
+  position: absolute;
+  display: block;
+}
 
+.span1 {
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #a945c7);
+}
 
+.btn:hover .span1 {
+  left: 100%;
+  transition: 1s;
+}
 
+.span3 {
+  bottom: 0;
+  right: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(270deg, transparent, #a945c7);
+}
+
+.btn:hover .span3 {
+  right: 100%;
+  transition: 1s;
+  transition-delay: 0.5s;
+}
+
+.span2 {
+  top: -100%;
+  right: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, #a945c7);
+}
+
+.btn:hover .span2 {
+  top: 100%;
+  transition: 1s;
+  transition-delay: 0.25s;
+}
+
+.span4 {
+  bottom: -100%;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(360deg, transparent, #a945c7);
+}
+
+.btn:hover .span4 {
+  bottom: 100%;
+  transition: 1s;
+  transition-delay: 0.75s;
 }

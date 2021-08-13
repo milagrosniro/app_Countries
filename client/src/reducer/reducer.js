@@ -1,5 +1,3 @@
-//IMPORTO LAS CONSTANTES
-
 
 import { SORT_BY_POPULATION,ACTIVITY_FILTER, CONTINENT_FILTER, GET_COUNTRIES, GET_COUNTRY_BY_ID, GET_COUNTRY_BY_NAME, ORDER, POST_ACTIVITY, GET_ALL_ACTIVITIES, ADD_ACTIVITY_COUNTRY} from "../actions/constants";
 
@@ -28,6 +26,7 @@ function rootReducer(state = initialState, action){
                 countriesFiltered: action.payload //devuelve todo lo obtenido por nombre
             }
         }
+
         case GET_COUNTRY_BY_ID: {
             return{
                 ...state,
@@ -116,23 +115,17 @@ function rootReducer(state = initialState, action){
                 countriesFiltered: continentFilter
             }
         }
+
         case ACTIVITY_FILTER:{
-            const countriesAll = state.countriesLoaded;
-            let countriesFilterActivity = [];
-            if (action.payload === "all") {
-                countriesFilterActivity = countriesAll;
-            } else {
-                //filtro todas las actividades por nombre
-                // countriesFilterActivity = state.allActivities.filter(a => a.name === action.payload)[0].countriesLoaded.map(countryAct => countryAct)
-                countriesFilterActivity= state.countriesLoaded.filter(c => {
-                    return c.activities.some(a => a.name === action.payload)
-                })
-            }
-            return{
-                ...state,
-                countriesFiltered: countriesFilterActivity      
-            }
-        }      
+            const activity= state.allActivities.filter(a=>a.name===action.payload)[0].countries.map(countryWithActivity => countryWithActivity)
+            return {
+                     ...state,
+                     countriesFiltered: activity
+                    }
+                 }
+            
+        
+        
         case POST_ACTIVITY:{
             return{
                 ...state,
@@ -147,20 +140,22 @@ function rootReducer(state = initialState, action){
                 allActivities: action.payload
             }
         }
-        // case ADD_ACTIVITY_COUNTRY:{
-        //     //filtro los paises que coinciden con el id enviado en la actividadCompleta
-        //     const countriesAddActiv = state.countriesLoaded.map(c =>{ if(c.id === action.payload.countryId){
-        //         c.activities=[...c.activities, action.payload]
-        //     }} ) 
-
-
-            // return{
-            //     ...state,
-
-            // }
-       // }
+        
         default: return state
     }
 }
 
 export default rootReducer;
+
+
+// case ADD_ACTIVITY_COUNTRY:{
+//     //filtro los paises que coinciden con el id enviado en la actividadCompleta
+//     const countriesAddActiv = state.countriesLoaded.map(c =>{ if(c.id === action.payload.countryId){
+//         c.activities=[...c.activities, action.payload]
+//     }} ) 
+
+
+    // return{
+    //     ...state,
+
+    // }

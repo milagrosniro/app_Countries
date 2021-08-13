@@ -4,29 +4,29 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCountryById } from "../../actions/actions";
 import classes from './countryDetails.module.css'
 
-export default function CountryDetails(){
-    const {id} = useParams();
-    const countryDetail =  useSelector(e => e.countryDetail)
-    console.log(countryDetail)
-    console.log("detalles pais",  countryDetail.activities)
+export default function CountryDetails() {
+    const { id } = useParams();
+    const countryDetail = useSelector(e => e.countryDetail)
+   // console.log(countryDetail)
+   // console.log("detalles pais", countryDetail.activities)
     const dispatch = useDispatch();
 
     useEffect(() => {
-       dispatch(getCountryById(id))
+        dispatch(getCountryById(id))
     }, [])
 
-    return(
+    return (
         <section className={classes.countryDetails}>
             <section className={classes.nameSection}>
                 <Link to='/countries'>
-                    <button>VOLVER A HOME</button>
                     <div className={classes.countryName}>{countryDetail?.name}</div>
+                    <button>VOLVER A HOME</button>
                 </Link>
             </section>
 
             <section className={classes.middle}>
                 <div className={classes.flag}>
-                    <img src={countryDetail?.flag} alt="Country Flag"/>
+                    <img className={classes.image} src={countryDetail?.flag} alt="Country Flag" />
                 </div>
 
                 <div className={classes.info}>
@@ -40,7 +40,7 @@ export default function CountryDetails(){
                         <div className={classes.li}>CONTINENTE: <span className={classes.data}> {countryDetail?.region}</span></div>
                         <div className={classes.li}>SUB REGION:<span className={classes.data}> {countryDetail?.subregion} </span> </div>
                         <div className={classes.li}>AREA:<span className={classes.data}> {countryDetail?.area}</span> </div>
-                        
+
                     </div>
                 </div>
             </section >
@@ -51,16 +51,16 @@ export default function CountryDetails(){
                 </section>
 
                 <section className={classes.activities2}>
-                  
+
                     {countryDetail?.activities?.length ?
-                    countryDetail?.activities.map(a=>{
-                        return (<div key={a.id} className={classes.activityCard}>
-                            <p>{a.name}</p>
-                            <p>Difficulty: {a.dificulty}</p>
-                            <p>Duration: {a.duration} mins</p>
-                            <p>Season: {a.season}</p>
-                        </div>   )
-                    } ):
+                        countryDetail?.activities.map(a => {
+                            return (<div key={a.id} className={classes.activityCard}>
+                                <p>{a.name}</p>
+                                <p>Difficulty: {a.dificulty}</p>
+                                <p>Duration: {a.duration} mins</p>
+                                <p>Season: {a.season}</p>
+                            </div>)
+                        }) :
                         <p> NO HAY ACTIVIDADES PARA ESTE PAIS</p>
                     }
                 </section>

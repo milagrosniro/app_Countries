@@ -14,9 +14,8 @@ export default function CountryCard({country}){
             <h2 className={classes.name}>NOMBRE: {country.name}</h2>
             <h3 className={classes.continent}> CONTINENTE: {country.region}</h3>
             <h4>POBLACION: {country.population}</h4>
-            <img src={country.flag} alt='Flag Country' width='200px' height='250px'
+            <img src={country.flag} alt='Flag Country'
             className={classes.flag}/>
-
         </div>
         </Link>
     )
