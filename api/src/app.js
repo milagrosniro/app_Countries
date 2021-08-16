@@ -6,8 +6,7 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const cors = require('cors');
 const routes = require('./routes/index.js');
-// const countriesRoutes = require('./routes/countries.js');
-// const activityRoutes = require('./routes/activity.js')
+
 
 require('./db.js');
 

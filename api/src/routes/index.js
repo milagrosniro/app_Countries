@@ -1,11 +1,11 @@
  const { Router } = require('express');
-//const express = require('express')
+
 // Importar todos los routers;
 // Ejemplo: const authRouter = require('./auth.js');
 const countriesRoutes = require('./countries');
 const activityRoutes = require('./activity.js')
 
-//const router = express.Router()
+
 
  const router = Router();
 
@@ -15,9 +15,9 @@ const activityRoutes = require('./activity.js')
  router.use('/countries', countriesRoutes )
  router.use('/activity', activityRoutes)
 
-//ruta para el landing --?? ESTA BIEN ACAA??
+//ruta para el landing 
 router.get('/', (req,res)=>{
-    res.send("INDEX /")
+    //res.send("INDEX /")
     //aca iria el landing page cone l boton
 })
 

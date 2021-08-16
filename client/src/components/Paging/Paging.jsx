@@ -2,9 +2,7 @@ import { React } from 'react';
 import classes from './paging.module.css';
 
 
-
 //ESTE COMPONENTE RENDERIZA LOS NUMEROS DE PAGINA
-
 //traigo por parametro los paises q deben ir por pagina, el length de todos los paises filtados y el paged que setea el estado de paginado
 
 export default function Paged({ countriesPerPage, totalCountries, paginado }) {
@@ -15,14 +13,14 @@ export default function Paged({ countriesPerPage, totalCountries, paginado }) {
     }
 
     return (
-        <nav className={classes.nav}>
+        <nav >
             <ul className={classes.ul}>
                 {pageNumbers &&
                     pageNumbers.map(number => (
                         <li>
                             <div className={classes.container}>
                                 {/* renderizo cada numero que sera un link q me lleva a esa pagina */}
-                                <a className={classes.enlace} onClick={() => paginado(number)}>
+                                <a onClick={() => paginado(number)}>
                                     {number}
                                 </a>
                             </div>

@@ -3,13 +3,8 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-//import ActivityFilter from "../Order&Filter/ActivityFilter";
-//import ContinentFilter from "../Order&Filter/ContinentFilter";
 import OrderAlf from "../Order/OrderAlf";
-// import SearchName from "../Order&Filter/SearchName";
 import SortPopulation from "../Order/SortPopulation";
-// import Prev from "../Paging/Prev";
-// import Next from "../Paging/Next";
 import CountryCard from "../Country/CountryCard";
 import { getAllCountries, continentFilter, getCountryByName, getAllActivities, activityFilter } from "../../actions/actions";
 import classes from "./home.module.css";
@@ -19,13 +14,10 @@ import Paged from "../Paging/Paging";
 
 export default function Home() {
     const dispatch = useDispatch()
-    //const countries = useSelector(e => e.countriesLoaded); //traigo TODOS los paises
     const countriesFiltered = useSelector(e => e.countriesFiltered)
-    //console.log(countries)
     const [search, setSearch] = useState();
     const [order, setOrder] = useState("ASC");
     const [sortByPopulation, setSortByPopulation] = useState("ASC");
-    //const [activity, setActivity] = useState("all");
     const [currentPage, setCurrentPage] = useState(1) //nro de pagina
     const [countriesPerPage, setCountriesPerPage] = useState(9) //paises por pagina
     const indexOfLastCountries = currentPage * countriesPerPage //const para indicar hasta que pais mostrar en cada pag
@@ -46,17 +38,17 @@ export default function Home() {
 
     function handleFilterActivity(e) {
         dispatch(activityFilter(e.target.value))
-        console.log(countriesFiltered)
+        
     }
 
     function handleSelectContinentChange(e) {
         dispatch(continentFilter(e.target.value)) //despacho la acc que filtra por continente con el e.target.value. Esta accion modifica el estado de countriesFiltered
-        console.log(currentCountries)
+       
     }
     function handleSubmitSearchName(e) {
         e.preventDefault();
         dispatch(getCountryByName(search)) //llamo a la funcion que busca por nombre
-        setSearch("") //NO SE SETEA EL VALOR DE SEARCH!!!!
+        setSearch("") 
     }
     function handleInputChangeName(e) {
         setSearch(e.target.value) //seteo el estado interno que cree para luego enviarlo en la funcion
@@ -67,8 +59,7 @@ export default function Home() {
     }
 
     return (
-
-        <div className={classes.div}>
+        <div>
             <section className={classes.sectionTop}>
 
                 <div className={classes.addActivity}>
@@ -84,10 +75,8 @@ export default function Home() {
 
                     <form className={classes.form} onSubmit={(e) => { handleSubmitSearchName(e) }}>
                         <h2>Ingrese el nombre del pais</h2>
-                        <input className={classes.input} type="text" name="name" placeholder="Argentina"
-                            onChange={(e) => { handleInputChangeName(e) }}
-                        />
-
+                        <input  type="text" name="name" placeholder="Argentina"
+                            onChange={(e) => { handleInputChangeName(e) }}/>
                         <div>
 
                         </div>
@@ -106,7 +95,7 @@ export default function Home() {
 
                     <SortPopulation sortByPopulation={sortByPopulation} setSortByPopulation={setSortByPopulation} />
                     <OrderAlf order={order} setOrder={setOrder} />
-                    {/* <ActivityFilter activity={activity} setActivity={setActivity} /> */}
+                
                     <label className={classes.label}>FILTRAR POR ACTIVIDAD(selecciona la actividad y sabras en que paises podras realizarla)</label>
 
                     <select onChange={e => handleFilterActivity(e)}>
@@ -114,14 +103,11 @@ export default function Home() {
                         {allActivities?.length &&
                             allActivities.map(a => {
                                 return (
-                                    <option key={a.id} value={a.name}>{a.name}</option>
+                                    <option className={classes.option} key={a.id} value={a.name}>{a.name}</option>
                                 )
                             })
 
                         }
-
-
-
                     </select>
 
                     {/* FILTRADO POR CONTINENTE  */}
@@ -147,20 +133,13 @@ export default function Home() {
                 <section className={classes.countries}>
                     <div className={classes.pageBtn}>
                         {/* PAGINADO */}
-
                         <Paged countriesPerPage={countriesPerPage} totalCountries={countriesFiltered.length} paginado={paginado} />
-
                     </div>
 
                     <div className={classes.sectionCountries}>
-
-                        {currentCountries ?
-                            currentCountries.map(c => {
+                      {currentCountries ? currentCountries.map(c => {
                                 return <CountryCard key={c.id} country={c} />
-                            }) :
-                            <p>{countriesFiltered}</p>
-                        }
-
+                            }) :<p>{countriesFiltered}</p>}
                     </div>
                 </section>
             </section>

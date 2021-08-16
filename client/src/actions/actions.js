@@ -12,7 +12,7 @@ export function getAllCountries(){
         
     }
 }
-// console.log(getAllCountries())
+
 //BUSCAR COUNTRY POR NOMBRE-BARRA D EBUSQUEDA
 //el search e sun filtrado mas
 
@@ -99,23 +99,4 @@ export function addActivityCountry(payload){ //le mando por payload al ActivityC
         })
     }
 }
-// export function postActivity(activity) {
-//     return async function(dispatch) {
-//     const res = await axios.post('http://localhost:3001/activity', activity)
-//     return {
-//         type: POST_ACTIVITY,
-//         res
-//     }
-// }
-// };
-    // return function(dispatch) {
-    //     return axios.post('http://localhost:3001/activity', activity)
-    //         .then(activityPosted => {
-    //             alert("Creaste una nueva Actividad")
-    //             return dispatch({
-    //                 type: POST_ACTIVITY,
-    //                 payload: activityPosted.data
-    //             })
-    //         })
-    // }
-//}
+

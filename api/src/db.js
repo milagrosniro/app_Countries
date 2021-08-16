@@ -2,8 +2,7 @@
 
 require('dotenv').config(); //me permite usar las variables de entorno
 const { Sequelize } = require('sequelize');
-//const modelCountry = require('./models/Country');
-//const modelActivity = require('./models/Activity')
+
 const fs = require('fs');
 const path = require('path');
 const {
@@ -40,7 +39,7 @@ sequelize.models = Object.fromEntries(capsEntries); //transforma la lista de par
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
-//console.log(sequelize.models);
+
 const {Country, Activity} = sequelize.models;
 
 // Aca vendrian las relaciones

@@ -6,7 +6,6 @@ const initialState = {
     countriesFiltered: [],
     countryDetail: {},
     allActivities: [],
-    activityPost:{},
 }
 
 
@@ -123,8 +122,7 @@ function rootReducer(state = initialState, action){
                      countriesFiltered: activity
                     }
                  }
-            
-        
+
         
         case POST_ACTIVITY:{
             return{
@@ -147,15 +145,3 @@ function rootReducer(state = initialState, action){
 
 export default rootReducer;
 
-
-// case ADD_ACTIVITY_COUNTRY:{
-//     //filtro los paises que coinciden con el id enviado en la actividadCompleta
-//     const countriesAddActiv = state.countriesLoaded.map(c =>{ if(c.id === action.payload.countryId){
-//         c.activities=[...c.activities, action.payload]
-//     }} ) 
-
-
-    // return{
-    //     ...state,
-
-    // }

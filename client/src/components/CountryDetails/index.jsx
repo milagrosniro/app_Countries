@@ -7,8 +7,6 @@ import classes from './countryDetails.module.css'
 export default function CountryDetails() {
     const { id } = useParams();
     const countryDetail = useSelector(e => e.countryDetail)
-   // console.log(countryDetail)
-   // console.log("detalles pais", countryDetail.activities)
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -33,7 +31,7 @@ export default function CountryDetails() {
                     <div className={classes.infoLeftRight}>
                         <div className={classes.li}>ID: <span className={classes.data}>{countryDetail?.id} </span></div>
                         <div className={classes.li}>CAPITAL:<span className={classes.data}> {countryDetail?.capital}</span></div>
-                        <div className={classes.li}>POBLACION:<span className={classes.data}> {countryDetail?.population}</span></div>
+                        <div className={classes.li}>POBLACION:<span className={classes.data}> {countryDetail?.population} millones</span></div>
 
                     </div>
                     <div className={classes.infoLeftRight}>
@@ -44,6 +42,7 @@ export default function CountryDetails() {
                     </div>
                 </div>
             </section >
+
 
             <section className={classes.activities}>
                 <section className={classes.titleActivities}>
