@@ -11,24 +11,25 @@ import classes from "./home.module.css";
 import Paged from "../Paging/Paging";
 
 
-
 export default function Home() {
     const dispatch = useDispatch()
     const countriesFiltered = useSelector(e => e.countriesFiltered)
-    const [search, setSearch] = useState();
+    const [search, setSearch] = useState("");
     const [order, setOrder] = useState("ASC");
     const [sortByPopulation, setSortByPopulation] = useState("ASC");
+
     const [currentPage, setCurrentPage] = useState(1) //nro de pagina
     const [countriesPerPage, setCountriesPerPage] = useState(9) //paises por pagina
     const indexOfLastCountries = currentPage * countriesPerPage //const para indicar hasta que pais mostrar en cada pag
     const indexOfFisrtCountries = indexOfLastCountries - countriesPerPage //const para indicar desd que pais mostrar en cada pag
     const currentCountries = countriesFiltered.slice(indexOfFisrtCountries, indexOfLastCountries) //paises que se muestran en la pagina. 
 
-    const allActivities = useSelector(state => state.allActivities)
-
     const paginado = (pageNumber) => {
         setCurrentPage(pageNumber)
     }
+
+    const allActivities = useSelector(state => state.allActivities)
+
 
     //traigo todos los paises cuando se renderiza el componente
     useEffect(() => {
@@ -49,9 +50,10 @@ export default function Home() {
         e.preventDefault();
         dispatch(getCountryByName(search)) //llamo a la funcion que busca por nombre
         setSearch("") 
+        // console.log(search)
     }
     function handleInputChangeName(e) {
-        setSearch(e.target.value) //seteo el estado interno que cree para luego enviarlo en la funcion
+        setSearch(e.target.value) //seteo el estado interno que cree para luego enviarlo en la funcion  
     }
 
     function onClickCountries(e) {
@@ -60,7 +62,7 @@ export default function Home() {
 
     return (
         <div>
-            <section className={classes.sectionTop}>
+            <section className={classes.sectionTop} >
 
                 <div className={classes.addActivity}>
                     {/* Link que lleva a la seccion para crear la actividad */}
@@ -75,7 +77,7 @@ export default function Home() {
 
                     <form className={classes.form} onSubmit={(e) => { handleSubmitSearchName(e) }}>
                         <h2>Ingrese el nombre del pais</h2>
-                        <input  type="text" name="name" placeholder="Argentina"
+                        <input  type="text" value={search} name="name" placeholder="Argentina..."
                             onChange={(e) => { handleInputChangeName(e) }}/>
                         <div>
 
@@ -119,7 +121,7 @@ export default function Home() {
                                 <option value="Africa">Africa</option>
                                 <option value="Americas">Americas</option>
                                 <option value="Asia">Asia</option>
-                                <option value="Europe">Europe</option>
+                                <option value="Europe">Europa</option>
                                 <option value="Oceania">Oceania</option>
                                 <option value="Polar">Polar</option>
 
@@ -129,17 +131,17 @@ export default function Home() {
                     </section>
                 </section>
 
-                {/* SECCION DONDE SE RENDERIZAS LAS COUNTRYCARD  */}
                 <section className={classes.countries}>
                     <div className={classes.pageBtn}>
                         {/* PAGINADO */}
                         <Paged countriesPerPage={countriesPerPage} totalCountries={countriesFiltered.length} paginado={paginado} />
                     </div>
+                {/* SECCION DONDE SE RENDERIZAS LAS COUNTRYCARD  */}
 
                     <div className={classes.sectionCountries}>
                       {currentCountries ? currentCountries.map(c => {
                                 return <CountryCard key={c.id} country={c} />
-                            }) :<p>{countriesFiltered}</p>}
+                            }) :<p>No existen paises</p>}
                     </div>
                 </section>
             </section>

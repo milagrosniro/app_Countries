@@ -6,6 +6,7 @@ import classes from './activityForm.module.css';
 import axios from "axios";
 
 
+
 function validate(info, countryId) {
     let errors = {};
     if (!info.name) {
@@ -33,6 +34,8 @@ function validate(info, countryId) {
 export default function ActivityForm() {
     const dispatch = useDispatch()
     const countries = useSelector(state => state.countriesLoaded)
+    
+
     const [errors, setErrors] = useState({})
     const [countryId, setCountryId] = useState([])
 
@@ -43,9 +46,14 @@ export default function ActivityForm() {
         season: "",
     })
 
+    useEffect(() => {
+        dispatch(getAllCountries())
+    }, [])
+
     function handleChange(e) {
         if (e.target.name === "countryId") {
             setCountryId([...countryId, e.target.value])
+            // console.log("COUNTRY", countryId)
         }
         else {
             setActivityPost({
@@ -58,10 +66,13 @@ export default function ActivityForm() {
             [e.target.name]: e.target.value
         }, countryId))
     };
+    function handleDelete(el){
+        setCountryId(countryId.filter(occ => occ !== el))
+        console.log("COUNTRYID",countryId)
+    }
 
 
     async function handleSubmit(e) {
-
         e.preventDefault();
         const activityComplete = { ...activityPost, countryId: countryId } //uno el objeto de activityPost con el estado de country
 
@@ -82,10 +93,8 @@ export default function ActivityForm() {
         }
     }
 
-
-    useEffect(() => {
-        dispatch(getAllCountries()); //hacer una copia por las dudas, para que no cambie segun los cambio de los filtrados
-    }, [dispatch])
+   
+  
 
     return (
         <section className={classes.name}>
@@ -97,16 +106,28 @@ export default function ActivityForm() {
                 <button className={classes.btnForm} >VOLVER A HOME</button>
             </Link>
 
+            
             {/* Hago el formulario */}
             <form className={classes.form} onSubmit={e => { handleSubmit(e) }}>
+                <div className={classes.form1}>
+
+                    <label >Selecciona el Pais</label>
+                    <select name="countryId"  onChange={e => handleChange(e)} >
+                        <option>Paises</option>
+                        {countries.map(c => (<option key={c.id} value={c.id}>{c.name}</option>))}
+                    </select>
+                   
+                
+                    {errors.countryId && (<p className={classes.p}>{errors.countryId}</p>)}
+                </div>
 
                 <div className={classes.form1}>
                     <label >Nombre:</label>
                     <input className={classes.inputForm} type='text' value={activityPost.name} name='name'
-                        onChange={(e) => { handleChange(e) }}>
+                        onChange={(e) => {handleChange(e) }}>
                         {/* Debajo de cada input prgeunto si hay algo en error.nombredelinput y si hay algo lo renderizo .TMB ES NECESARIO HACER LA VALIDACION EN EL BACK*/}
                     </input>
-                        {errors.name && (<p className={classes.p}>{errors.name}</p>)}
+                    {errors.name && (<p className={classes.p}>{errors.name}</p>)}
                 </div>
 
                 <div className={classes.form1}>
@@ -120,7 +141,7 @@ export default function ActivityForm() {
 
                 <div className={classes.form1}>
                     <label >Duracion (en horas) :</label>
-                    <input className={classes.inputForm} type='text' value={activityPost.duration} name='duration'
+                    <input className={classes.inputForm} type='number' value={activityPost.duration} name='duration'
                         onChange={e => handleChange(e)}>
                     </input>
                     {/* Debajo de cada input prgeunto si hay algo en error.nombredelinput y si hay algo lo renderizo .TMB ES NECESARIO HACER LA VALIDACION EN EL BACK*/}
@@ -130,6 +151,7 @@ export default function ActivityForm() {
                 <div className={classes.form1}>
                     <label >Temporada del año:</label>
                     <select name="season" value={activityPost.season} onChange={e => handleChange(e)}>
+                        <option value="temporada">Temporada</option>
                         <option value="verano">Verano</option>
                         <option value="invierno">Invierno</option>
                         <option value="primavera">Primavera</option>
@@ -138,17 +160,15 @@ export default function ActivityForm() {
                     {errors.season && (<p className={classes.p}>{errors.season}</p>)}
                 </div>
 
-                <div className={classes.form1}>
 
-                    <label >Selecciona el Pais</label>
-                    <select name="countryId" onChange={e => handleChange(e)} >
-                        {countries.map(c => (<option key={c.id} value={c.id}>{c.name}</option>))}
-                    </select>
-                    {errors.countryId && (<p className={classes.p}>{errors.countryId}</p>)}
-                </div>
 
                 <button className={classes.btnForm2} type='submit'>Crear Actividad</button>
             </form>
+            {countryId.map(el =>
+                <div> 
+                    <p className={classes.form1}>{el}</p>
+                    <button onClick={()=> handleDelete(el)}>X</button>
+                </div>)}
         </section>
     )
 }

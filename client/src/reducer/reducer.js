@@ -1,5 +1,5 @@
 
-import { SORT_BY_POPULATION,ACTIVITY_FILTER, CONTINENT_FILTER, GET_COUNTRIES, GET_COUNTRY_BY_ID, GET_COUNTRY_BY_NAME, ORDER, POST_ACTIVITY, GET_ALL_ACTIVITIES, ADD_ACTIVITY_COUNTRY} from "../actions/constants";
+import { SORT_BY_POPULATION,ACTIVITY_FILTER, CONTINENT_FILTER, GET_COUNTRIES, GET_COUNTRY_BY_ID, GET_COUNTRY_BY_NAME, ORDER, GET_ALL_ACTIVITIES} from "../actions/constants";
 
 const initialState = {
     countriesLoaded: [],
@@ -67,9 +67,8 @@ function rootReducer(state = initialState, action){
         }
         
         case ORDER:{
-            let actionPayload = action.payload.toUpperCase() //paso en mayuscula
            let orderAlfName;
-         if( actionPayload === 'ASC'){
+         if( action.payload === 'ASC'){
              orderAlfName = function(a,b){
                 if (a.name > b.name) {
                     return 1;
@@ -116,21 +115,13 @@ function rootReducer(state = initialState, action){
         }
 
         case ACTIVITY_FILTER:{
-            const activity= state.allActivities.filter(a=>a.name===action.payload)[0].countries.map(countryWithActivity => countryWithActivity)
+            const countryActivity= state.allActivities.filter(a=>a.name===action.payload)[0].countries.map(countryWithActivity => countryWithActivity)
+            //retorna los datos del pais donde se puede realizar esa actividad
             return {
                      ...state,
-                     countriesFiltered: activity
+                     countriesFiltered: countryActivity
                     }
                  }
-
-        
-        case POST_ACTIVITY:{
-            return{
-                ...state,
-                allActivities: [...state.allActivities, action.payload ],
-                activityPost: action.payload
-            }
-        }
 
         case GET_ALL_ACTIVITIES:{
             return{
@@ -138,6 +129,7 @@ function rootReducer(state = initialState, action){
                 allActivities: action.payload
             }
         }
+        
         
         default: return state
     }

@@ -1,9 +1,9 @@
 //Express
 
 const express = require('express');
-const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser'); //permite configurar cookies en el servidor
 //const bodyParser = require('body-parser');
-const morgan = require('morgan');
+const morgan = require('morgan'); //middleware que ayuda a identificar a los clientes que acceden a nuestra aplicación
 const cors = require('cors');
 const routes = require('./routes/index.js');
 
@@ -23,7 +23,7 @@ server.use(cookieParser());
 server.use(morgan('dev'));
 
 
-//Control centralizado de Errores
+
 server.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); // update to match the domain you will make the request from
   res.header('Access-Control-Allow-Credentials', 'true');

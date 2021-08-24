@@ -2,7 +2,7 @@
 
 // Importar todos los routers;
 // Ejemplo: const authRouter = require('./auth.js');
-const countriesRoutes = require('./countries');
+const countriesRoutes = require('./countries.js');
 const activityRoutes = require('./activity.js')
 
 

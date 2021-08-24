@@ -17,7 +17,5 @@ export default function OrderAlf({ order, setOrder }) {
         }
     }
 
-    return (
-        <button className={classes.btnOrderAlf} onClick={(e) => { handleOnClick(e) }} >ORDENAR ALFABETICAMENTE</button>
-    )
+    return (<button className={classes.btnOrderAlf} onClick={(e) => { handleOnClick(e) }} >ORDENAR ALFABETICAMENTE</button>)
 }
